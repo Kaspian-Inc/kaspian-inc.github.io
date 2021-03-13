@@ -1,18 +1,15 @@
 ---
 title: "Getting Started"
 linkTitle: "Getting Started"
+date: 2021-02-13
 weight: 1
 description: >
-  What does your user need to know to try your project?
+  Initial configuration steps to get started with Kaspian.
 ---
 
-Information in this section helps your user try your project themselves.
+<!-- Information in this section helps your user try your project themselves.
 
 * What do your users need to do to start using your project? This could include downloading/installation instructions, including any prerequisites or system requirements.
-
-* Introductory “Hello World” example, if appropriate. More complex tutorials should live in the Tutorials section.
-
-Consider using the headings below for your getting started page. You can delete any that are not applicable to your project.
 
 ## Prerequisites
 
@@ -24,9 +21,5 @@ Where can your user find your project code? How can they install it (binaries, i
 
 ## Setup
 
-Is there any initial setup users need to do after installation to try your project?
-
-## Try it out!
-
-Can your users test their installation, for example by running a commmand or deploying a Hello World example?
+Is there any initial setup users need to do after installation to try your project? -->
 

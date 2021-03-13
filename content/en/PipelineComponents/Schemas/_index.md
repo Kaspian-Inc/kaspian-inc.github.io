@@ -1,6 +1,6 @@
 ---
 title: "Schemas"
-date: 2017-01-05
+date: 2021-02-13
 weight: 1
 description: >
   Flexible data structures
@@ -11,12 +11,12 @@ Schemas define the structure of data at any point within a Pipeline graph.
 Because they are required at every transformation within a graph, schemas ensure that 
 Kaspian Pipelines are strongly typed and thereby protect the data integrity of downstream data sinks.
 
-[PICTURE OF EXAMPLE SCHEMA]
+{{< figure src="schema.png" width="850px">}}
 
 The Schema editor can be accessed via the Pipelines tab: after navigating to Pipelines,
 the Components view and the Graph Builder view can be toggled using the top right button.
 
-[PICTURE OF TAB TOGGLE BUTTON]
+{{< figure src="pipelines_toggle_components.png" width="850px">}}
 
 Like Tasks, Schemas can be scoped to specific Pipelines or be configured to have global scope
 (i.e. used in any Pipeline). Scoping serves both to help organize Schemas and to facilitate 
@@ -36,7 +36,7 @@ All Tasks have either an input Schema or an output Schema; many require both.
 The input Schema defines the structure of data entering a Task while the output Schema defines the 
 structure of data exiting a Task.
 
-[PICTURE OF EXAMPLE FIELD]
+{{< figure src="schema_field.png" width="850px">}}
 
 A Schema consists of an ordered array of fields. 
 A field has four elements: `name`, `description`, `datatype`, and `nullable`.
@@ -68,10 +68,5 @@ The `nullable` flag is a boolean option that specifies if the value for that spe
 This option can serve as a valuable data integrity check for required fields.
 
 
-
 ## Datastore Schemas
-Tables registered in flat file/data lake environments such as AWS S3 can be added as Datastores
-[LINK - S3 DATASTORES]. This abstraction allows these resources to behave identically to SQL Datastores 
-such as Snowflake and Postgres within the Kaspian compute layer. Kaspian requires that these Datastores 
-have a Schema attached so that data integrity can be programmatically enforced. It is recommended that 
-Datastore Schemas have global scope so that they can be reused by other Pipelines.
+Tables registered in flat file/data lake environments such as AWS S3 can be added as [Datastores]({{<ref "GettingStarted/AddingDatastores#aws-s3">}}). This abstraction allows these resources to behave identically to SQL Datastores such as Snowflake and Postgres within the Kaspian compute layer. Kaspian requires that these Datastores have a Schema attached so that data integrity can be programmatically enforced. It is recommended that Datastore Schemas have global scope so that they can be reused by other Pipelines.

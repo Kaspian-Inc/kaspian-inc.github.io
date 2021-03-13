@@ -1,12 +1,32 @@
 ---
-title: "Query Console"
-date: 2017-01-05
-weight: 1
+title: "Introspection"
+linkTitle: "Introspection"
+date: 2021-02-13
+weight: 3
 description: >
-  A short lead descripton about this content page. It can be **bold** or _italic_ and can be split over multiple paragraphs.
+  Kaspian provides several mechanisms to gain greater insight into your pipelines.
 ---
 
-{{% pageinfo %}}
+## The Pipeline Inspector
+### Execution logs
+There are two types of execution logs Kaspian displays for each Pipeline execution. There's a pipeline execution log that presents any errors that resulted from starting up the pipeline. These are error logs produced by Kaspian if any errors occur while attempting to deploy the pipeline, e.g., the Gitub code path is invalid.
+
+{{< figure src="kaspian_error_log.png" width="850px">}}
+
+Once nodes in the Pipeline begin executing, they each have their own set of logs that can be displayed by clicking on the specific node and selecting the `View Log` button on the bottom righthand pane. These contain the Spark and Kubernetes error logs produced during execution of each node.
+
+{{< figure src="spark_error_log.png" width="850px">}}
+
+### Query staging data
+When a given node is clicked, the intermediate data that resulted from it during a given execution can be queried via a SQL console. The data is located in the `staging_data` table. For example
+
+{{< highlight sql "linenos=table" >}}
+SELECT *
+FROM staging_data
+LIMIT 100;
+{{< / highlight >}}
+
+<!-- {{% pageinfo %}}
 This is a placeholder page. Replace it with your own content.
 {{% /pageinfo %}}
 
@@ -236,4 +256,4 @@ Stumptown PBR&B keytar plaid street art, forage XOXO pitchfork selvage affogato 
 
 ```
 This is the final element on the page and there should be no margin below this.
-```
+``` -->

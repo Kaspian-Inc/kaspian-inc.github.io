@@ -1,6 +1,6 @@
 ---
 title: "Tasks"
-date: 2017-01-05
+date: 2021-02-13
 weight: 2
 description: >
   Read, write, and transform
@@ -9,12 +9,12 @@ Tasks are the principal units of work in a Pipeline graph.
 They enable data to be read in, transformed, and written back out to connected Datastores and thereby greatly 
 simplify data manipulation in any environment at any scale.
 
-[PICTURE OF EXAMPLE TASK]
+<!-- [PICTURE OF EXAMPLE TASK] -->
 
 The Task editor can be accessed via the Pipelines tab: after navigating to Pipelines,
 the Components view and the Graph Builder view can be toggled using the top right button.
 
-[PICTURE OF TAB TOGGLE BUTTON]
+{{< figure src="pipelines_toggle_components.png" width="850px">}}
 
 Like Schemas, Tasks can be scoped to specific Pipelines or be configured to have global scope
 (i.e. used in any Pipeline). Scoping serves both to help organize Tasks and to facilitate their reuse
@@ -34,22 +34,26 @@ Data Readers are used to read data from registered Datastores.
 As they are the only task with this capability, Data Readers serve as the root nodes for 
 all Pipeline graphs. In a Pipeline graph, Data Readers may only have outbound edges.
 
-[PICTURE OF DATA READER]
+{{< figure src="data_reader.png" width="850px">}}
 
 Additionally, Data Readers have the following fields:
 
-
 **Source Datastore**: The datastore to read from.
 
-**Code Source**: A link to a `.sql` file on GitHub. The SQL query must be Spark SQL compliant. 
-The file can be on any branch in any repository so long as the connected GitHub integration 
-[LINK GITHUB INTEGRATION] has read access to it. 
-The SQL file contains the query to be run against the source Datastore in order to load in data.
+**Code Source**: A link to a `.sql` file on GitHub. The SQL query must be Spark SQL compliant. The file can be on any branch in any repository so long as the connected [Github integration]({{<ref "GettingStarted/AddingIntegrations#github">}}) has read access to it. The SQL file contains the query to be run against the source Datastore in order to load in data.
 
-[SQL CODE BLOCK]
+{{< highlight sql "linenos=table" >}}
+SELECT
+    start_station_id ss_id,
+    start_station_latitude ss_lat,
+    start_station_longitude ss_lon,
+    end_station_id es_id,
+    end_station_latitude es_lat,
+    end_station_longitude es_lon
+FROM sample.nyc_citibikes
+{{< / highlight >}}
 
-For S3 datastores, note that the special constant `data` is used to indicate the table object 
-(see above example).
+For S3 datastores, note that the special constant `data` is used to indicate the table object. In the above example, `sample.nyc_citibikes` would be replaced with `data` if it was from S3 instead of a SQL database.
 
 **Output Schema**: The schema of the data produced by the query contained in the code source.
 
@@ -58,7 +62,7 @@ Data Writers are used to write data to registered Datastores. As they are the on
 Data Writers serve as the leaf (terminal) nodes for all Pipeline graphs. In a Pipeline graph,
 Data Writers may only have inbound edges.
 
-[PICTURE OF DATA WRITER]
+{{< figure src="data_writer.png" width="850px">}}
 
 Additionally, Data Writers have the following fields:
 
@@ -82,9 +86,9 @@ This source-agnostic nature of the Kaspian execution engine means that a single 
 capable of accessing and operating upon data from multiple Datastores and/or Pipeline branches. 
 In a Pipeline graph, SQL Transforms may have any number of both inbound and outbound edges.
 
-[PICTURE OF SQL TRANSFORM]
+{{< figure src="sql_transform.png" width="850px">}}
 
-Additionally, Data Writers have the following fields:
+Additionally, SQL Transforms have the following fields:
 
 **Output Schema**: The schema of the data produced by the query contained in the code source.
 
@@ -93,7 +97,7 @@ corresponding either to a Data Reader output or to an intermediate output of ano
 In order to distinguish between these inbound edges when writing the transformation 
 query each edge must be configured with an alias and a schema.
 
-[PICTURE OF ALIASES NEXT TO DAG]
+{{< figure src="sql_transform_aliases.png" width="850px">}}
 
 While the same schema can be used multiple times within a SQL Transform if the data sources being read from have
 the same structure, aliases must be unique. An alias refers to the name that the input source table is referred to
@@ -101,14 +105,48 @@ in the SQL query contained in the code source (see example below). This abstract
 data stage can be referred to and operated upon as if it were a materialized table even if this isn't the case.
 
 **Code Source**: A link to a `.sql` file on GitHub.
-The file can be on any branch in any repository so long as the connected GitHub integration
-[LINK GITHUB INTEGRATION] has read access to it.
-The SQL file contains the query to be run using the aliases provided in the Input Schemas as table names.
-The query must be Spark SQL compliant.
-Below is an example query that utilizes the aliases above:
+The file can be on any branch in any repository so long as the connected [Github integration]({{<ref "GettingStarted/AddingIntegrations#github">}}) has read access to it. The SQL file contains the query to be run using the aliases provided in the Input Schemas as table names. The query must be Spark SQL compliant. Below is an example query that utilizes the aliases above:
 
-[PICTURE OF QUERY THAT UTILIZES ALIASES PROVIDED]
-
+{{< highlight sql "linenos=table" >}}
+SELECT
+  starbucks_stops.stop_id,
+  stop_names.stop_name
+FROM starbucks_stops
+JOIN stop_names
+ON starbucks_stops.stop_id = stop_names.stop_id;
+{{< / highlight >}}
 
 ## Python Function Transforms
+The Python Function Transform allows for Python user-defined functions to be applied to any data. This transform only allows for a single input, but allows multiple outputs still.
+
+{{< figure src="python_function.png" width="850px">}}
+
 ## Python DataFrame Transforms
+Python DataFrame Transforms allow for direct manipulation of data with Pandas or Pyspark. Similar to the SQL transform, this allows any number of inbound and outbound edges. This Task takes a Python code source structured as follows:
+
+{{< figure src="python_df_transform_aliases.png" width="850px">}}
+
+{{< highlight python "linenos=table" >}}
+import pandas as pd
+
+def main(input_data: dict) -> pd.DataFrame:
+	from example_package import some_function
+
+    # Extract dataframes
+    df_citibikes = input_data['df_citibikes']
+    df_starbucks = input_data['df_starbucks']
+
+    df_final = some_function(df_starbucks, df_citibikes)
+
+    return df_final
+{{< / highlight >}}
+
+Due to the distributed nature of our compute engine, certain imports must be specified within the `main` function instead of the top of the file. Some libraries may fail to import otherwise.
+
+{{< figure src="python_dataframe.png" width="850px">}}
+
+## ML Transforms
+Coming soon...
+
+## Data Validators
+Coming soon...
